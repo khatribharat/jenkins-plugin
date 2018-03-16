@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.openshift</groupId>
+  <artifactId>openshift-restclient-java</artifactId>
+  <versioning>
+    <release>5.9.0.Final</release>
+    <versions>
+      <version>5.9.0.Final</version>
+    </versions>
+    <lastUpdated>20180316101307</lastUpdated>
+  </versioning>
+</metadata>

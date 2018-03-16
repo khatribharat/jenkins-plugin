@@ -190,6 +190,12 @@ public class RetryIClient implements IClient {
     }
 
     @Override
+    public <T extends IResource> T get(String version, String kind, String name,
+                                       String namespace) {
+        return (T) retry(() -> client.get(version, kind, name, namespace));
+    }
+
+    @Override
     public IList get(String kind, String namespace) {
         return (IList) retry(() -> client.get(kind, namespace));
     }
@@ -235,6 +241,13 @@ public class RetryIClient implements IClient {
     }
 
     @Override
+    public <T extends IResource> T execute(String httpMethod, String version, String kind,
+            String namespace, String name, String subresource, IResource payload) {
+        return (T) retry(() -> client.execute(httpMethod, version, kind, namespace,
+                name, subresource, payload));
+    }
+
+    @Override
     public <T extends IResource> T execute(String httpMethod, String kind,
             String namespace, String name, String subresource,
             IResource payload, Map<String, String> params) {
@@ -256,6 +269,15 @@ public class RetryIClient implements IClient {
             String subContext, JSONSerializeable payload,
             Map<String, String> params) {
         return (T) retry(() -> client.execute(factory, httpMethod, kind,
+                namespace, name, subresource, subContext, payload, params));
+    }
+
+    @Override
+    public <T> T execute(ITypeFactory factory, String httpMethod, String version, String kind,
+                         String namespace, String name, String subresource,
+                         String subContext, JSONSerializeable payload,
+                         Map<String, String> params) {
+        return (T) retry(() -> client.execute(factory, httpMethod, version, kind,
                 namespace, name, subresource, subContext, payload, params));
     }
 

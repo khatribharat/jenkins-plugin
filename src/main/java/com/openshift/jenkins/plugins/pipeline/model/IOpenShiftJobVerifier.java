@@ -7,29 +7,23 @@ import com.openshift.restclient.capability.CapabilityVisitor;
 import com.openshift.restclient.capability.IStoppable;
 import com.openshift.restclient.capability.resources.IPodLogRetrievalAsync;
 import com.openshift.restclient.model.IPod;
-import com.openshift.restclient.model.IResource;
 import hudson.Launcher;
 import hudson.model.TaskListener;
-import hudson.util.CopyOnWriteMap;
-import io.fabric8.kubernetes.api.model.Pod;
 import org.jboss.dmr.ModelNode;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface IOpenShiftJobVerifier extends ITimedOpenShiftPlugin {
 
     String DISPLAY_NAME = "Verify OpenShift Job";
-    String RESOURCE_KIND_JOB = "Job";
     String API_VERSION_JOB = "batch/v1";
+    // TODO(khatri): Move these to MessageConstants.java
     String EXIT_JOB_NO_JOB_OBJ = "\n\nExiting \""
             + DISPLAY_NAME
             + "\" unsuccessfully; the job \"%s\" could not be read.";
@@ -72,7 +66,7 @@ public interface IOpenShiftJobVerifier extends ITimedOpenShiftPlugin {
         ModelNode node = resource.getNode();
         String version = node.get("apiVersion").asString();
         String kind = node.get("kind").asString();
-        if (API_VERSION_JOB.equals(version) && RESOURCE_KIND_JOB.equals(kind)) {
+        if (API_VERSION_JOB.equals(version) && ResourceKind.JOB.equals(kind)) {
             job = new Job(resource);
         }
         return job;
@@ -156,7 +150,7 @@ public interface IOpenShiftJobVerifier extends ITimedOpenShiftPlugin {
 
         while (TimeUnit.NANOSECONDS.toMillis(System.nanoTime()) < (startTime + wait)) {
             // let's watch the job status
-            resource = client.get(RESOURCE_KIND_JOB, jobName, namespace);
+            resource = client.get(API_VERSION_JOB, ResourceKind.JOB, jobName, namespace);
             job = createJob(resource);
             if (job == null) {
                 listener.getLogger()
@@ -229,7 +223,7 @@ public interface IOpenShiftJobVerifier extends ITimedOpenShiftPlugin {
         IClient client = this.getClient(listener, DISPLAY_NAME, overrides);
 
         if (client != null) {
-            KubernetesResource resource = client.get(RESOURCE_KIND_JOB, jobName, namespace);
+            KubernetesResource resource = client.get(API_VERSION_JOB, ResourceKind.JOB, jobName, namespace);
             IJob job = createJob(resource);
 
             if (job != null) {
