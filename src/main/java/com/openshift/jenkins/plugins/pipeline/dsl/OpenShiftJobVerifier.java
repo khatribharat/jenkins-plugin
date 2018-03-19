@@ -68,10 +68,10 @@ public class OpenShiftJobVerifier extends TimedOpenShiftBaseStep implements
                         "need to specify job");
             OpenShiftJobVerifier step = new OpenShiftJobVerifier(
                     job.toString());
-            if (arguments.containsKey("showBuildLogs")) {
-                Object showBuildLogs = arguments.get("showBuildLogs");
-                if (showBuildLogs != null) {
-                    step.setShowJobLogs(showBuildLogs.toString());
+            if (arguments.containsKey("showJobLogs")) {
+                Object showJobLogs = arguments.get("showJobLogs");
+                if (showJobLogs != null) {
+                    step.setShowJobLogs(showJobLogs.toString());
                 }
             }
 

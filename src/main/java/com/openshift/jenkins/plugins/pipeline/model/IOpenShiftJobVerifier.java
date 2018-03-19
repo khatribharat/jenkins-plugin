@@ -12,10 +12,7 @@ import hudson.model.TaskListener;
 import org.jboss.dmr.ModelNode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -164,7 +161,7 @@ public interface IOpenShiftJobVerifier extends ITimedOpenShiftPlugin {
             jobState = job.getJobStatus();
             if (verbose) {
                 listener.getLogger().printf(
-                        "\nOpenShiftJobVerifier job state: completions: %d, succeeded: %s, failed: %s" + job.getCompletions(), jobState.getSucceeded(), jobState.getFailed());
+                        "\nOpenShiftJobVerifier job state: completions: %d, succeeded: %d, failed: %d",  job.getCompletions(), jobState.getSucceeded(), jobState.getFailed());
             }
 
             if (isJobRunning(job) && follow) {
@@ -216,8 +213,8 @@ public interface IOpenShiftJobVerifier extends ITimedOpenShiftPlugin {
 
         boolean follow = Boolean.parseBoolean(getShowJobLogs(overrides));
         if (chatty)
-            listener.getLogger().println(
-                    "\nOpenShiftJobVerifier logger follow " + follow);
+            listener.getLogger().printf(
+                    "\nOpenShiftJobVerifier logger follow  %b", follow);
 
         // get oc client
         IClient client = this.getClient(listener, DISPLAY_NAME, overrides);
